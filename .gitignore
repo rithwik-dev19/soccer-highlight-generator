@@ -1,0 +1,16 @@
+# Environment variables (API keys - never share these!)
+.env
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Output videos (too large for GitHub)
+output/
+
+# Data files
+data/
+
+# Virtual environment
+venv/
