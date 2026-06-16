@@ -1,3 +1,6 @@
+import json
+import os
+
 def calculate_excitement_score(match):
     """
     Scores a match based on how exciting it is.
@@ -40,7 +43,6 @@ def pick_best_match(matches):
 
     # Pick the highest scored match
     best = max(matches, key=lambda x: x["excitement_score"])
-
     return best
 
 def describe_match(match):
@@ -75,20 +77,37 @@ def describe_match(match):
         "excitement_score": match["excitement_score"]
     }
 
-# Test it
+def run_highlight_selector():
+    """
+    Reads matches from data/matches.json
+    Picks best match and saves to data/best_match.json
+    """
+    # Read matches from saved file
+    with open("data/matches.json", "r") as f:
+        matches = json.load(f)
+
+    print(f"📂 Loaded {len(matches)} matches from data/matches.json")
+
+    # Pick best match
+    best_match = pick_best_match(matches)
+    description = describe_match(best_match)
+
+    # Add description into best_match dict
+    best_match["description"] = description
+
+    # ✅ Save best match to data folder
+    os.makedirs("data", exist_ok=True)
+    with open("data/best_match.json", "w") as f:
+        json.dump(best_match, f, indent=2)
+
+    print(f"💾 Saved best match to data/best_match.json")
+    print(f"\n🏆 TODAY'S HIGHLIGHT MATCH:")
+    print(f"  Headline : {description['headline']}")
+    print(f"  Reason   : {description['reason']}")
+    print(f"  League   : {description['league']} ({description['country']})")
+    print(f"  Excitement Score: {description['excitement_score']}")
+
+    return best_match, description
+
 if __name__ == "__main__":
-    # Import and use real data
-    from data_fetcher import get_matches_by_date
-
-    matches = get_matches_by_date("2026-06-15")
-
-    if matches:
-        best_match = pick_best_match(matches)
-        description = describe_match(best_match)
-
-        print("\n🏆 TODAY'S HIGHLIGHT MATCH:")
-        print(f"  Headline : {description['headline']}")
-        print(f"  Reason   : {description['reason']}")
-        print(f"  League   : {description['league']} ({description['country']})")
-        print(f"  Excitement Score: {description['excitement_score']}")
-        
+    run_highlight_selector()

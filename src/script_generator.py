@@ -1,5 +1,6 @@
 import anthropic
 import os
+import json
 from dotenv import load_dotenv
 
 # Load API key from .env file
@@ -42,34 +43,37 @@ Only return the script text, nothing else."""
     )
 
     script = message.content[0].text
-    print("✅ Script generated!")
+
+    # ✅ Save script to data folder
+    os.makedirs("data", exist_ok=True)
+    with open("data/script.txt", "w") as f:
+        f.write(script)
+
+    print("✅ Script generated and saved to data/script.txt!")
     return script
 
-# Test it
-if __name__ == "__main__":
-    # Simulate a match and description
-    test_match = {
-        "home_team": "Porto Velho EC",
-        "away_team": "Humaita SC",
-        "score_str": "13 - 0",
-        "league": "Serie D",
-        "country": "BRA",
-        "home_score": 13,
-        "away_score": 0,
-        "total_goals": 13
-    }
+def run_script_generator():
+    """
+    Reads best match from data/best_match.json
+    Generates script and saves to data/script.txt
+    """
+    # Read best match from saved file
+    with open("data/best_match.json", "r") as f:
+        best_match = json.load(f)
 
-    test_description = {
-        "headline": "Porto Velho EC destroy Humaita SC 13 - 0",
-        "reason": "massive 13-goal thrashing + goal fest with 13 goals",
-        "league": "Serie D",
-        "country": "BRA",
-        "excitement_score": 160
-    }
+    print(f"📂 Loaded best match: {best_match['home_team']} vs {best_match['away_team']}")
 
-    script = generate_highlight_script(test_match, test_description)
+    description = best_match["description"]
 
-    print("\n🎙️ GENERATED SCRIPT:")
+    # Generate script
+    script = generate_highlight_script(best_match, description)
+
+    print(f"\n🎙️ GENERATED SCRIPT:")
     print("-" * 40)
     print(script)
     print("-" * 40)
+
+    return script
+
+if __name__ == "__main__":
+    run_script_generator()
