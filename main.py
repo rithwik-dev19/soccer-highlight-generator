@@ -10,6 +10,7 @@ from highlight_selector import pick_best_match, describe_match, run_highlight_se
 from script_generator import generate_highlight_script, run_script_generator
 from voiceover_generator import generate_voiceover, run_voiceover_generator
 from video_assembler import assemble_video, run_video_assembler
+from card_generator import create_stat_card
 
 def run_pipeline(date=None):
     """
@@ -58,13 +59,19 @@ def run_pipeline(date=None):
     script = generate_highlight_script(best_match, description)
     print(f"✅ Script ready!")
 
-    # ── STEP 4: Generate voiceover ─────────────────
-    print("\n🎙️ STEP 4: Generating voiceover...")
+   # ── STEP 4: Generate stat card ─────────────────
+    print("\n🎨 STEP 4: Generating stat card...")
+    from card_generator import create_stat_card
+    create_stat_card(best_match)
+    print(f"✅ Stat card ready!")
+
+    # ── STEP 5: Generate voiceover ─────────────────
+    print("\n🎙️ STEP 5: Generating voiceover...")
     voiceover_path = generate_voiceover(script)
     print(f"✅ Voiceover ready!")
 
-    # ── STEP 5: Assemble video ─────────────────────
-    print("\n🎬 STEP 5: Assembling final video...")
+    # ── STEP 6: Assemble video ─────────────────────
+    print("\n🎬 STEP 6: Assembling final video...")
     video_path = assemble_video()
     print(f"✅ Video ready!")
 
